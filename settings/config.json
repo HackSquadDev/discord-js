@@ -1,0 +1,12 @@
+{
+    "bot": {
+        "token": "",
+        "clientID": ""
+    },
+    "database": {
+        "mongo": ""
+    },
+    "guilds": {
+        "main": ""
+    }
+}
