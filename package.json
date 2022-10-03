@@ -1,0 +1,19 @@
+{
+    "name": "hacksquadjsbot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "@discordjs/builders": "^1.1.0",
+      "@discordjs/rest": "^1.0.1",
+      "discord.js": "^14.2.0",
+      "fs": "^0.0.1-security",
+      "mongoose": "^6.5.1"
+    }
+  }
+  

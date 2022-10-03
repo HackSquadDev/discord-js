@@ -1,7 +1,8 @@
 {
     "bot": {
         "token": "",
-        "clientID": ""
+        "clientID": "",
+        "prefix": "/"
     },
     "database": {
         "mongo": ""
