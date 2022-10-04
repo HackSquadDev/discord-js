@@ -28,7 +28,7 @@ This project is licensed under the MIT License - see the [LICENSE](/LICENSE) fil
 
 * [discord.js](https://discord.js.org/#/)
 * [discord.js-commando](https://discord.js.org/#/docs/commando/master/general/welcome)
-* [discord.js-docs]((https://discord.js.org/#/docs/main/stable/general/welcome))
+* [discord.js-docs](https://discord.js.org/#/docs/main/stable/general/welcome)
 * [discord.js-guide](https://discordjs.guide/)
 
 ### Maintainers
