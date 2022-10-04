@@ -1,4 +1,14 @@
-## Discord-JS
+<p align="center">
+  <a href="https://hacksquad.dev">
+    <img  alt="logo" src="https://user-images.githubusercontent.com/17677196/190159412-34a1d863-1c2f-49bb-930c-054753137118.jpg">
+  </a>
+</p>
+<h1 align="center">Welcome to hackSquad discord.js Bot!</h1>
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT" target="_blank">
+    <img alt="License: MIT License" src="https://img.shields.io/badge/License-MIT License-yellow.svg" />
+  </a>
+</p>
 
 This is a simple discord bot made with discord.js for HackSquad's discord server.
 
