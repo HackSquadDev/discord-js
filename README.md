@@ -15,6 +15,11 @@ This is a simple discord bot made with discord.js for HackSquad's discord server
 2. Make your changes
 3. Create a pull request
 
+### Contributing
+
+If you want to contribute to this project, please read the [contributing guidelines](/CONTRIBUTING.md).
+Checkout the [issues](/issues) for things you can work on.
+
 ### License
 
 This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details
@@ -23,7 +28,11 @@ This project is licensed under the MIT License - see the [LICENSE](/LICENSE) fil
 
 * [discord.js](https://discord.js.org/#/)
 * [discord.js-commando](https://discord.js.org/#/docs/commando/master/general/welcome)
-* [discord.js-docs](https://discord.js.org/#/docs/main/stable/general/welcome)
+* [discord.js-docs]((https://discord.js.org/#/docs/main/stable/general/welcome))
 * [discord.js-guide](https://discordjs.guide/)
+
+### Maintainers
+
+* [**@HackSquadDev**](https://github.com/HackSquadDev)
 
 ### Made with ❤️ by [HackSquad](https://hacksquad.dev)
