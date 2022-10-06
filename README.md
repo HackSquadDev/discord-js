@@ -44,5 +44,8 @@ This project is licensed under the MIT License - see the [LICENSE](/LICENSE) fil
 ### Maintainers
 
 -   [**@HackSquadDev**](https://github.com/HackSquadDev)
+-   [**@MrKrishnaAgarwal**](https://github.com/MrKrishnaAgarwal)
+-   [**@Miya25**](https://github.com/Miya25)
+
 
 ### Made with ❤️ by [HackSquad](https://hacksquad.dev)
