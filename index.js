@@ -1,8 +1,4 @@
-const {
-    Client,
-    Collection,
-    GatewayIntentBits
-} = require('discord.js');
+const { Client, Collection, GatewayIntentBits } = require("discord.js");
 
 const client = new Client({
     fetchAllMembers: true,
@@ -10,11 +6,7 @@ const client = new Client({
         parse: ["roles", "users", "everyone"],
         repliedUser: false
     },
-    partials: [
-        'MESSAGE',
-        'CHANNEL',
-        'REACTION',
-    ],
+    partials: ["MESSAGE", "CHANNEL", "REACTION"],
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
@@ -29,7 +21,7 @@ const client = new Client({
         GatewayIntentBits.DirectMessageTyping,
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildScheduledEvents
-    ],
+    ]
 });
 
 client.commands = new Collection();
@@ -42,12 +34,12 @@ client.logger = require("./functions/logger");
 client.errors = require("./functions/errors");
 
 let date = new Date();
-client.footer = `\u00a9 ${date.getFullYear()} • HackSquad`
-client.logo = ``
-client.banner = ``
-client.color = `#0000FF`
+client.footer = `\u00a9 ${date.getFullYear()} • HackSquad`;
+client.logo = ``;
+client.banner = ``;
+client.color = `#0000FF`;
 
-const eventHandler = require('./functions/handlers');
+const eventHandler = require("./functions/handlers");
 eventHandler.loadEvents(client);
 eventHandler.loadCommands(client);
 eventHandler.loadSlash(client);
