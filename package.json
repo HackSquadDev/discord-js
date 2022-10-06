@@ -4,16 +4,21 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "lint": "eslint . --ext .js",
+        "format": "prettier --write ."
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
-      "@discordjs/builders": "^1.1.0",
-      "@discordjs/rest": "^1.0.1",
-      "discord.js": "^14.2.0",
-      "fs": "^0.0.1-security",
-      "mongoose": "^6.5.1"
+        "@discordjs/builders": "^1.1.0",
+        "@discordjs/rest": "^1.0.1",
+        "discord.js": "^14.2.0",
+        "fs": "^0.0.1-security",
+        "mongoose": "^6.5.1"
+    },
+    "devDependencies": {
+        "eslint": "^8.24.0",
+        "prettier": "^2.7.1"
     }
-  }
-  
+}
