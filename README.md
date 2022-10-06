@@ -45,7 +45,6 @@ This project is licensed under the MIT License - see the [LICENSE](/LICENSE) fil
 
 -   [**@HackSquadDev**](https://github.com/HackSquadDev)
 -   [**@MrKrishnaAgarwal**](https://github.com/MrKrishnaAgarwal)
--   [**@HackSquadDev**](https://github.com/HackSquadDev)
 -   [**@Miya25**](https://github.com/Miya25)
 
 
