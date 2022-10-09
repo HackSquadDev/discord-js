@@ -3,7 +3,7 @@
     <img  alt="logo" src="https://user-images.githubusercontent.com/17677196/190159412-34a1d863-1c2f-49bb-930c-054753137118.jpg">
   </a>
 </p>
-<h1 align="center">Welcome to hackSquad discord.js Bot!</h1>
+<h1 align="center">HackSquad discord Bot!</h1>
 <p align="center">
   <a href="https://opensource.org/licenses/MIT" target="_blank">
     <img alt="License: MIT License" src="https://img.shields.io/badge/License-MIT License-yellow.svg" />
@@ -16,8 +16,15 @@ This is a simple discord bot made with discord.js for HackSquad's discord server
 
 1. Clone the repo
 2. Run `npm install`
-3. Create a file called `.env` and add the following line to it: `TOKEN=YOUR_TOKEN_HERE`
-4. Run `npm start`
+3. Create a file called `.env`, copy the content from `.env.example` and update the values as necessary
+4. Run `npm run watch:start`
+
+#### Production Mode
+
+In order to use the bot in production mode run the following commands:
+
+1. `npm run build`
+2. `npm run start`
 
 ### How to contribute
 
@@ -37,15 +44,12 @@ This project is licensed under the MIT License - see the [LICENSE](/LICENSE) fil
 ### Acknowledgments
 
 -   [discord.js](https://discord.js.org/#/)
--   [discord.js-commando](https://discord.js.org/#/docs/commando/master/general/welcome)
--   [discord.js-docs](https://discord.js.org/#/docs/main/stable/general/welcome)
--   [discord.js-guide](https://discordjs.guide/)
+-   [sapphire](https://github.com/sapphiredev/framework)
 
 ### Maintainers
 
--   [**@HackSquadDev**](https://github.com/HackSquadDev)
--   [**@MrKrishnaAgarwal**](https://github.com/MrKrishnaAgarwal)
--   [**@Miya25**](https://github.com/Miya25)
-
+-   [@HackSquadDev](https://github.com/HackSquadDev)
+-   [@MrKrishnaAgarwal](https://github.com/MrKrishnaAgarwal)
+-   [@Miya25](https://github.com/Miya25)
 
 ### Made with ❤️ by [HackSquad](https://hacksquad.dev)
