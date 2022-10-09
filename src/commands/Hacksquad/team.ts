@@ -4,8 +4,9 @@ import { Formatters, MessageEmbed } from 'discord.js';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
 //
+import { getTeamList } from '../../lib/cachedFetch';
 import { hackSquadApiUrl } from '../../lib/constants';
-import type { ILeaderboardResponse, IPullRequestInfo, ITeamResponse } from '../../lib/types';
+import type { IPullRequestInfo, ITeamResponse } from '../../lib/types';
 
 //
 const squadSizeMax = 5;
@@ -25,7 +26,8 @@ export class UserCommand extends Command {
 					type: 'STRING',
 					name: 'name',
 					description: 'Name or Slug of the team to lookup for',
-					required: true
+					required: true,
+					autocomplete: true
 				}
 			]
 		});
@@ -35,7 +37,7 @@ export class UserCommand extends Command {
 		await interaction.deferReply({ ephemeral: true });
 
 		// Fetching all the teams
-		const { teams } = await fetch<ILeaderboardResponse>(`${hackSquadApiUrl}/leaderboard`, FetchResultTypes.JSON);
+		const teams = await getTeamList();
 
 		const teamInputRaw = interaction.options.getString('name');
 		const teamInput = teamInputRaw?.toLowerCase()?.trim() ?? '';

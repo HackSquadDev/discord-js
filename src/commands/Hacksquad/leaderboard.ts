@@ -1,11 +1,9 @@
 import { Command } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { MessageEmbed, Formatters } from 'discord.js';
-import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
 //
-import { hackSquadApiUrl } from '../../lib/constants';
-import type { ILeaderboardResponse } from '../../lib/types';
+import { getTeamList } from '../../lib/cachedFetch';
 
 //
 const winningTeamsCount = 60;
@@ -31,7 +29,7 @@ export class UserCommand extends Command {
 	}
 
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		const { teams } = await fetch<ILeaderboardResponse>(`${hackSquadApiUrl}/leaderboard`, FetchResultTypes.JSON);
+		const teams = await getTeamList();
 
 		const pageSize = 10;
 		const pageNumber = (interaction.options.getInteger('page') ?? 1) - 1;

@@ -1,11 +1,9 @@
 import { Command } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { MessageEmbed, Formatters } from 'discord.js';
-import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
 //
-import { novuApiUrl } from '../../lib/constants';
-import type { INovuContributorsResponse } from '../../lib/types';
+import { getContributorsList } from '../../lib/cachedFetch';
 
 //
 const goldRequirement = 7;
@@ -33,10 +31,10 @@ export class UserCommand extends Command {
 	}
 
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		const response = await fetch<INovuContributorsResponse>(`${novuApiUrl}/contributors-mini`, FetchResultTypes.JSON);
+		const contributors = await getContributorsList();
 
 		// Filtering the contributor list
-		const list = response.list
+		const list = contributors
 			// Removing bots from contributor list
 			.filter((contributor) => !contributor.github.includes('bot'))
 			// Removing users with no contributions
