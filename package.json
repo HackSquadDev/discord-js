@@ -42,7 +42,7 @@
 		"format": "prettier --write \"src/**/*.ts\""
 	},
 	"engines": {
-		"node": "16.x"
+		"node": ">=16.x"
 	},
 	"prettier": "@sapphire/prettier-config"
 }
