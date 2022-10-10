@@ -12,7 +12,7 @@ import { createPaginationButtons, paginate } from '../../lib/pagination';
 //
 const winningTeamsCount = 60;
 
-type LeaderboardTeam = Pick<ILeaderboardResponse, 'teams'>['teams'];
+type LeaderboardTeam = ILeaderboardResponse['teams'];
 
 //
 @ApplyOptions<Command.Options>({
