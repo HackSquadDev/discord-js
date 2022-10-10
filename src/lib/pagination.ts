@@ -72,34 +72,29 @@ export function paginate({ msg, buttons, interaction, pages, currentPage }: IPag
 		switch (intr.customId) {
 			case 'first':
 			case 'last':
-				{
-					collector.resetTimer();
-					await intr.deferUpdate();
-					currentPage = intr.customId === 'first' ? 0 : pages.length - 1;
-					await dispatch(intr, currentPage);
-				}
+				collector.resetTimer();
+				await intr.deferUpdate();
+				currentPage = intr.customId === 'first' ? 0 : pages.length - 1;
+				await dispatch(intr, currentPage);
 				break;
+
 			case 'previous':
-				{
-					collector.resetTimer();
-					await intr.deferUpdate();
-					currentPage = currentPage - 1 < 0 ? pages.length - 1 : currentPage - 1;
-					await dispatch(intr, currentPage);
-				}
+				collector.resetTimer();
+				await intr.deferUpdate();
+				currentPage = currentPage - 1 < 0 ? pages.length - 1 : currentPage - 1;
+				await dispatch(intr, currentPage);
 				break;
+
 			case 'next':
-				{
-					collector.resetTimer();
-					await intr.deferUpdate();
-					currentPage = currentPage + 1 >= pages.length ? 0 : currentPage + 1;
-					await dispatch(intr, currentPage);
-				}
+				collector.resetTimer();
+				await intr.deferUpdate();
+				currentPage = currentPage + 1 >= pages.length ? 0 : currentPage + 1;
+				await dispatch(intr, currentPage);
 				break;
+
 			case 'close':
-				{
-					if (intr.message.deletable) await intr.message.delete().catch(() => null);
-					collector.stop();
-				}
+				if (intr.message.deletable) await intr.message.delete().catch(() => null);
+				collector.stop();
 				break;
 		}
 

@@ -1,13 +1,13 @@
 import { Command } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { MessageEmbed, Formatters, Message } from 'discord.js';
-import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
 //
-import { hackSquadApiUrl } from '../../lib/constants';
-import type { ILeaderboardResponse } from '../../lib/types';
 import { createChunk } from '../../lib/utils';
+import { getTeamList } from '../../lib/cachedFetch';
 import { createPaginationButtons, paginate } from '../../lib/pagination';
+
+import type { ILeaderboardResponse } from '../../lib/types';
 
 //
 const winningTeamsCount = 60;
@@ -35,10 +35,11 @@ export class UserCommand extends Command {
 	}
 
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		const { teams } = await fetch<ILeaderboardResponse>(`${hackSquadApiUrl}/leaderboard`, FetchResultTypes.JSON);
+		const teams = await getTeamList();
 
-		const pageSize = 10;
+		const pageSize = 5;
 		const pages = createChunk(teams, pageSize);
+
 		const pageNumber = (interaction.options.getInteger('page') ?? 1) - 1;
 
 		// If page size is given more than possible length, send the possible page count
@@ -52,6 +53,7 @@ export class UserCommand extends Command {
 		await interaction.deferReply();
 
 		const buttons = createPaginationButtons();
+
 		const msg = (await interaction.followUp({
 			embeds: [this.createLeaderboardEmbed(pages, teams, pageNumber)],
 			components: [buttons],
@@ -77,6 +79,8 @@ export class UserCommand extends Command {
 	private createLeaderboardEmbed(pages: LeaderboardTeam[], teams: LeaderboardTeam, pageNumber: number) {
 		const currentPage = pages[pageNumber] || pages[0];
 
+		const sourceLink = Formatters.hyperlink('`🔗` **hacksquad.dev**', 'https://www.hacksquad.dev/leaderboard');
+
 		const embed = new MessageEmbed()
 			.setColor('BLURPLE')
 			.setAuthor({
@@ -84,12 +88,13 @@ export class UserCommand extends Command {
 				url: 'https://www.hacksquad.dev/leaderboard',
 				iconURL: 'https://www.hacksquad.dev/favicon.png'
 			})
-			.setThumbnail('https://www.hacksquad.dev/favicon.png')
 			.setFooter({
 				text: `Page ${pageNumber + 1} of ${pages.length}`
 			})
-			.setDescription(`This data is taken from ${Formatters.hyperlink('`🔗` **hacksquad.dev**', 'https://www.hacksquad.dev/leaderboard')}.`)
-			.addFields(this.formatTeams(currentPage, teams));
+			.setDescription(`This data is taken from ${sourceLink}.\n\u200B`)
+			.addFields(this.formatTeams(currentPage, teams))
+			.setImage('https://user-images.githubusercontent.com/17677196/190159412-34a1d863-1c2f-49bb-930c-054753137118.jpg')
+			.setTimestamp();
 
 		return embed;
 	}
@@ -108,7 +113,12 @@ export class UserCommand extends Command {
 
 			return {
 				name: `${squadPosText} ${squadName} ${squadEmoji}`,
-				value: [`• \`🔢\` \`Points:\` ${squadPoints}`, `• \`🔗\` \`Link:\` ${squadLink}`].join('\n')
+				value: [
+					//
+					`• \`🔢\` \`Points:\` ${squadPoints}`,
+					`• \`🔗\` \`Link:\` ${squadLink}`,
+					'\u200B'
+				].join('\n')
 			};
 		});
 

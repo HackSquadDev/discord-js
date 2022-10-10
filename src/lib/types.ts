@@ -1,11 +1,13 @@
 // https://www.hacksquad.dev/api/leaderboard
 export interface ILeaderboardResponse {
-	teams: {
-		id: string;
-		name: string;
-		score: number;
-		slug: string;
-	}[];
+	teams: ILeaderboardTeam[];
+}
+
+export interface ILeaderboardTeam {
+	id: string;
+	name: string;
+	score: number;
+	slug: string;
 }
 
 // https://www.hacksquad.dev/api/team?id={slug}
@@ -48,13 +50,15 @@ export interface IPullRequestInfo {
 
 // https://contributors.novu.co/contributors-mini
 export interface INovuContributorsResponse {
-	list: {
-		_id: string;
-		github: string;
-		avatar_url: string;
-		name?: string;
-		totalPulls: number;
-	}[];
+	list: NovuContributor[];
+}
+
+export interface NovuContributor {
+	_id: string;
+	github: string;
+	avatar_url: string;
+	name?: string;
+	totalPulls: number;
 }
 
 // https://contributors.novu.co/contributor/{name}
@@ -73,6 +77,7 @@ export interface INovuContributorResponse {
 	name: string;
 	pulls: {
 		url: string;
+		html_url: string;
 		number: number;
 		title: string;
 		created_at: string;

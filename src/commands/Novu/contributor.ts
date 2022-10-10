@@ -3,9 +3,12 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Formatters, MessageEmbed } from 'discord.js';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
+import fetchItem from 'node-fetch';
+
 //
 import { novuApiUrl } from '../../lib/constants';
-import type { INovuBadgeResponse, INovuContributorResponse, INovuContributorsResponse } from '../../lib/types';
+import { getContributorsList } from '../../lib/cachedFetch';
+import type { INovuBadgeResponse, INovuContributorResponse } from '../../lib/types';
 
 //
 const goldRequirement = 7;
@@ -25,21 +28,22 @@ export class UserCommand extends Command {
 				{
 					type: 'STRING',
 					name: 'username',
-					description: 'Github username of the contributor to lookup for',
-					required: true
+					description: 'Name or github username of the contributor to lookup for',
+					required: true,
+					autocomplete: true
 				}
 			]
 		});
 	}
 
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply();
 
-		// Fetching all the teams
-		const response = await fetch<INovuContributorsResponse>(`${novuApiUrl}/contributors-mini`, FetchResultTypes.JSON);
+		// Fetching all the contributors
+		const contributors = await getContributorsList();
 
 		// Filtering the contributor list
-		const list = response.list
+		const list = contributors
 			// Removing bots from contributor list
 			.filter((contributor) => !contributor.github.includes('bot'))
 			// Removing users with no contributions
@@ -56,11 +60,16 @@ export class UserCommand extends Command {
 		}
 
 		// Fetching the current team details
-		const [contributor, badges, specialBadges] = await Promise.all([
+		const [contributor, badges] = await Promise.all([
 			fetch<INovuContributorResponse>(`${novuApiUrl}/contributor/${foundUser.github}`, FetchResultTypes.JSON),
-			fetch<INovuBadgeResponse>(`${novuApiUrl}/badge/${foundUser.github}`, FetchResultTypes.JSON),
-			fetch<any>(`https://novu.co/page-data/contributors/${foundUser.github}/page-data.json`, FetchResultTypes.JSON)
+			fetch<INovuBadgeResponse>(`${novuApiUrl}/badge/${foundUser.github}`, FetchResultTypes.JSON)
 		]);
+
+		const specialBadges: any = await fetchItem(`https://novu.co/page-data/contributors/${foundUser.github}/page-data.json`, {
+			headers: { 'Content-Type': 'application/json' }
+		})
+			.then((res) => res.json())
+			.catch(() => {});
 
 		//
 		const prCount = contributor.totalPulls;
@@ -185,7 +194,7 @@ export class UserCommand extends Command {
 				.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 				.slice(0, 5)
 				.map((pr) => {
-					const prLink = Formatters.hyperlink(pr.title, pr.url);
+					const prLink = Formatters.hyperlink(pr.title, pr.html_url);
 
 					return `• ${prLink} (#${Formatters.bold(pr.number.toString())})`;
 				});
@@ -201,7 +210,7 @@ export class UserCommand extends Command {
 		const teamInfoEmbed = new MessageEmbed()
 			.setColor('YELLOW')
 			.setAuthor({
-				name: `"${contributor.name}" on Novu.co`,
+				name: `"${contributor.name ?? contributor.github}" on Novu.co`,
 				url: `https://novu.co/contributors/${contributor.github}`,
 				iconURL: contributor.avatar_url
 			})
@@ -211,6 +220,7 @@ export class UserCommand extends Command {
 				iconURL: 'https://novu.co/favicon-32x32.png'
 			})
 			.addFields(contributorFields)
+			.setImage(`https://contributors.novu.co/profiles/${contributor.github}-small.jpg`)
 			.setTimestamp();
 
 		await interaction.editReply({ embeds: [teamInfoEmbed] });

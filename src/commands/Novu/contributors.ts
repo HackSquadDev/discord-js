@@ -1,14 +1,14 @@
 import { Command } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { MessageEmbed, Formatters } from 'discord.js';
-import { fetch, FetchResultTypes } from '@sapphire/fetch';
+import type { Message } from 'discord.js';
 
 //
-import { novuApiUrl } from '../../lib/constants';
-import type { INovuContributorsResponse } from '../../lib/types';
 import { createChunk } from '../../lib/utils';
+import { getContributorsList } from '../../lib/cachedFetch';
 import { createPaginationButtons, paginate } from '../../lib/pagination';
-import type { Message } from 'discord.js';
+
+import type { INovuContributorsResponse } from '../../lib/types';
 
 //
 const goldRequirement = 7;
@@ -36,14 +36,14 @@ export class UserCommand extends Command {
 	}
 
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		const response = await fetch<INovuContributorsResponse>(`${novuApiUrl}/contributors-mini`, FetchResultTypes.JSON);
+		const contributors = await getContributorsList();
 
 		// Filtering the contributor list
-		const list = response.list
+		const list = contributors
 			.filter((contributor) => !contributor.github.includes('bot') && contributor.totalPulls > 0)
 			.sort((a, b) => b.totalPulls - a.totalPulls);
 
-		const pageSize = 10;
+		const pageSize = 5;
 		const pages = createChunk(list, pageSize);
 		const pageNumber = (interaction.options.getInteger('page') ?? 1) - 1;
 
@@ -58,6 +58,7 @@ export class UserCommand extends Command {
 		await interaction.deferReply();
 
 		const buttons = createPaginationButtons();
+
 		const msg = (await interaction.followUp({
 			embeds: [this.createLeaderboardEmbed(pages, list, pageNumber)],
 			components: [buttons],
@@ -84,6 +85,8 @@ export class UserCommand extends Command {
 	private createLeaderboardEmbed(pages: INovuContributorsResponse['list'][], list: INovuContributorsResponse['list'], pageNumber: number) {
 		const currentPage = pages[pageNumber] || pages[0];
 
+		const sourceLink = Formatters.hyperlink('`🔗` **novu.co**', 'https://novu.co/contributors');
+
 		const contributorsEmbed = new MessageEmbed()
 			.setColor('YELLOW')
 			.setAuthor({
@@ -91,12 +94,11 @@ export class UserCommand extends Command {
 				url: 'https://novu.co/contributors',
 				iconURL: 'https://novu.co/favicon-32x32.png'
 			})
-			.setDescription(`This data is taken from ${Formatters.hyperlink('`🔗` **novu.co**', 'https://novu.co/contributors')}.`)
-			.setThumbnail('https://novu.co/icons/icon-512x512.png')
-			.setFooter({
-				text: `Page ${pageNumber + 1} of ${pages.length}`
-			})
-			.addFields(this.formatContributorList(currentPage, list));
+			.setDescription(`This data is taken from ${sourceLink}\n\u200B`)
+			.addFields(this.formatContributorList(currentPage, list))
+			.setImage('https://cdn.discordapp.com/attachments/574910905817628672/1028958594634362890/contributors.png')
+			.setFooter({ text: `Page ${pageNumber + 1} of ${pages.length}` })
+			.setTimestamp();
 
 		return contributorsEmbed;
 	}
@@ -123,7 +125,12 @@ export class UserCommand extends Command {
 			//
 			const descriptionList = {
 				name: `${contributorPos} ${contributorName}`,
-				value: [`• \`🔢 Total PRs:\` ${totalPulls} ${medalsEmojiText}`, `• \`🌐 Github:\` ${contributorLink}`].join('\n')
+				value: [
+					//
+					`• \`🔢 Total PRs:\` ${totalPulls} ${medalsEmojiText}`,
+					`• \`🌐 Github:\` ${contributorLink}`,
+					'\u200B'
+				].join('\n')
 			};
 
 			return descriptionList;
