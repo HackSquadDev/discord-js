@@ -34,7 +34,7 @@ export class UserCommand extends Command {
 	}
 
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply();
 
 		// Fetching all the teams
 		const teams = await getTeamList();
@@ -81,6 +81,7 @@ export class UserCommand extends Command {
 
 		//
 		const teamDescriptionArray = [
+			'\u200B',
 			`• \`🔢 Points:\` ${teamScoreText}`,
 			`• \`🏅 Position:\` ${teamPositionText} (out of ${teams.length}) ${teamPositionEmoji}`,
 			`• \`👥 Members Count:\` ${teamSizeText} (${teamSizeInfo})`,
@@ -149,6 +150,7 @@ export class UserCommand extends Command {
 				iconURL: 'https://www.hacksquad.dev/favicon.png'
 			})
 			.addFields(teamFields)
+			.setImage('https://user-images.githubusercontent.com/17677196/190159412-34a1d863-1c2f-49bb-930c-054753137118.jpg')
 			.setTimestamp();
 
 		await interaction.editReply({ embeds: [teamInfoEmbed] });

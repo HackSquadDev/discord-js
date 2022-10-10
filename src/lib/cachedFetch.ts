@@ -1,3 +1,4 @@
+import Fuse from 'fuse.js';
 import NodeCache from 'node-cache';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
@@ -13,6 +14,17 @@ const teamKey = 'hacksquad-team';
 const contributorKey = 'novu-contributors';
 
 //
+export const hackSquadTeamFuse = new Fuse<ILeaderboardTeam>([], {
+	keys: ['name'],
+	threshold: 0.3
+});
+
+export const novuContributorsFuse = new Fuse<NovuContributor>([], {
+	keys: ['github', 'name'],
+	threshold: 0.3
+});
+
+//
 export const getTeamList = async () => {
 	// Findign and erturning from cache
 	const existingItems = cache.get<ILeaderboardTeam[]>(teamKey);
@@ -23,6 +35,9 @@ export const getTeamList = async () => {
 
 	// Setting the items to cache
 	cache.set(teamKey, teams);
+
+	// Setting fuse collection
+	hackSquadTeamFuse.setCollection(teams);
 
 	//
 	return teams;
@@ -39,6 +54,9 @@ export const getContributorsList = async () => {
 
 	// Setting the items to cache
 	cache.set(contributorKey, list);
+
+	// Setting fuse collection
+	novuContributorsFuse.setCollection(list);
 
 	//
 	return list;

@@ -5,7 +5,7 @@ import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework
 import type { AutocompleteInteraction } from 'discord.js';
 
 //
-import { getContributorsList } from '../../lib/cachedFetch';
+import { getContributorsList, novuContributorsFuse } from '../../lib/cachedFetch';
 
 //
 @ApplyOptions<InteractionHandler.Options>({
@@ -22,7 +22,7 @@ export class AutocompleteHandler extends InteractionHandler {
 		}
 
 		//
-		const contributors = await getContributorsList();
+		const allItems = await getContributorsList();
 
 		//
 		const focusedOption = interaction.options.getFocused(true);
@@ -30,20 +30,19 @@ export class AutocompleteHandler extends InteractionHandler {
 
 		const searchValue = currentValue.toLowerCase().trim();
 
-		// Filtering the contributor list
-		const contributorList = contributors
-			// Removing bots from contributor list
-			.filter((contributor) => !contributor.github.includes('bot'))
-			// Removing users with no contributions
-			.filter((contributor) => contributor?.totalPulls > 0)
-			// Filter by name or github ID
-			.filter((contributor) => contributor.name?.toLowerCase().includes(searchValue) || contributor.github.toLowerCase().includes(searchValue))
-			// Formatting as necessary
+		// Filtering the items
+		const searchResult = searchValue
+			? // Do fussy search if there is any input
+			  novuContributorsFuse.search(searchValue).map((itm) => itm.item)
+			: // Return all items by default
+			  allItems;
+
+		const contributorList = searchResult //
+			.slice(0, 25)
 			.map((contributor) => ({
 				name: contributor.name ? `${contributor.name} (${contributor.github})` : contributor.github,
 				value: contributor.github
-			}))
-			.slice(0, 25);
+			}));
 
 		//
 		return this.some(contributorList);

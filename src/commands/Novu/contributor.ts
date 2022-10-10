@@ -28,7 +28,7 @@ export class UserCommand extends Command {
 				{
 					type: 'STRING',
 					name: 'username',
-					description: 'Github username of the contributor to lookup for',
+					description: 'Name or github username of the contributor to lookup for',
 					required: true,
 					autocomplete: true
 				}
@@ -37,7 +37,7 @@ export class UserCommand extends Command {
 	}
 
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply();
 
 		// Fetching all the contributors
 		const contributors = await getContributorsList();
@@ -220,6 +220,7 @@ export class UserCommand extends Command {
 				iconURL: 'https://novu.co/favicon-32x32.png'
 			})
 			.addFields(contributorFields)
+			.setImage(`https://contributors.novu.co/profiles/${contributor.github}-small.jpg`)
 			.setTimestamp();
 
 		await interaction.editReply({ embeds: [teamInfoEmbed] });

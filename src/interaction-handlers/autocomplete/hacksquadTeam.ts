@@ -5,7 +5,7 @@ import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework
 import type { AutocompleteInteraction } from 'discord.js';
 
 //
-import { getTeamList } from '../../lib/cachedFetch';
+import { getTeamList, hackSquadTeamFuse } from '../../lib/cachedFetch';
 
 //
 @ApplyOptions<InteractionHandler.Options>({
@@ -22,7 +22,7 @@ export class AutocompleteHandler extends InteractionHandler {
 		}
 
 		// Fetching all the teams
-		const teams = await getTeamList();
+		const allItems = await getTeamList();
 
 		//
 		const focusedOption = interaction.options.getFocused(true);
@@ -30,13 +30,16 @@ export class AutocompleteHandler extends InteractionHandler {
 
 		const searchValue = currentValue.toLowerCase().trim();
 
-		//
-		const teamItems = teams
-			// Filtering by team name
-			.filter((team) => team.name.toLowerCase().includes(searchValue))
-			// Formatting as necessary
-			.map((team) => ({ name: team.name, value: team.slug }))
-			.slice(0, 25);
+		// Serching with Fuse.js
+		const searchResult = searchValue
+			? // Searching with Fuse.js
+			  hackSquadTeamFuse.search(searchValue).map((itm) => itm.item)
+			: // Return all items by default
+			  allItems;
+
+		const teamItems = searchResult //
+			.slice(0, 25)
+			.map((team) => ({ name: team.name, value: team.slug }));
 
 		//
 		return this.some(teamItems);
