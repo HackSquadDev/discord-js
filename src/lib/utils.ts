@@ -62,3 +62,13 @@ function getGuildInfo(guild: Guild | null) {
 	if (guild === null) return 'Direct Messages';
 	return `${guild.name}[${cyan(guild.id)}]`;
 }
+
+export function createChunk<T>(arr: T[], len: number): T[][] {
+	const chunks: T[][] = [];
+
+	for (let i = 0; i < arr.length; i += len) {
+		chunks.push(arr.slice(i, i + len));
+	}
+
+	return chunks;
+}

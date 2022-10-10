@@ -4,8 +4,9 @@ import { Formatters, MessageEmbed } from 'discord.js';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
 //
+import { getTeamList } from '../../lib/cachedFetch';
 import { hackSquadApiUrl } from '../../lib/constants';
-import type { ILeaderboardResponse, IPullRequestInfo, ITeamResponse } from '../../lib/types';
+import type { IPullRequestInfo, ITeamResponse } from '../../lib/types';
 
 //
 const squadSizeMax = 5;
@@ -25,17 +26,18 @@ export class UserCommand extends Command {
 					type: 'STRING',
 					name: 'name',
 					description: 'Name or Slug of the team to lookup for',
-					required: true
+					required: true,
+					autocomplete: true
 				}
 			]
 		});
 	}
 
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply();
 
 		// Fetching all the teams
-		const { teams } = await fetch<ILeaderboardResponse>(`${hackSquadApiUrl}/leaderboard`, FetchResultTypes.JSON);
+		const teams = await getTeamList();
 
 		const teamInputRaw = interaction.options.getString('name');
 		const teamInput = teamInputRaw?.toLowerCase()?.trim() ?? '';
@@ -79,6 +81,7 @@ export class UserCommand extends Command {
 
 		//
 		const teamDescriptionArray = [
+			'\u200B',
 			`• \`🔢 Points:\` ${teamScoreText}`,
 			`• \`🏅 Position:\` ${teamPositionText} (out of ${teams.length}) ${teamPositionEmoji}`,
 			`• \`👥 Members Count:\` ${teamSizeText} (${teamSizeInfo})`,
@@ -147,6 +150,7 @@ export class UserCommand extends Command {
 				iconURL: 'https://www.hacksquad.dev/favicon.png'
 			})
 			.addFields(teamFields)
+			.setImage('https://user-images.githubusercontent.com/17677196/190159412-34a1d863-1c2f-49bb-930c-054753137118.jpg')
 			.setTimestamp();
 
 		await interaction.editReply({ embeds: [teamInfoEmbed] });

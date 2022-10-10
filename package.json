@@ -21,6 +21,8 @@
 		"discord-api-types": "^0.33.5",
 		"discord.js": "^13.11.0",
 		"dotenv-cra": "^3.0.2",
+		"fuse.js": "^6.6.2",
+		"node-cache": "^5.1.2",
 		"reflect-metadata": "^0.1.13"
 	},
 	"devDependencies": {
@@ -46,7 +48,7 @@
 		"prepare": "husky install"
 	},
 	"engines": {
-		"node": "16.x"
+		"node": ">=16.x"
 	},
 	"prettier": "@sapphire/prettier-config",
 	"lint-staged": {
