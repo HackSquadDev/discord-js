@@ -1,6 +1,6 @@
 import { Command } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Formatters, MessageEmbed } from 'discord.js';
+import { Formatters, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
 import fetchItem from 'node-fetch';
@@ -44,13 +44,11 @@ export class UserCommand extends Command {
 
 		// Filtering the contributor list
 		const list = contributors
-			// Removing bots from contributor list
-			.filter((contributor) => !contributor.github.includes('bot'))
-			// Removing users with no contributions
-			.filter((contributor) => contributor?.totalPulls > 0);
+			// Removing bots and people with no PRs from contributor list
+			.filter((contributor) => !contributor.github.includes('bot') && contributor.totalPulls > 0);
 
-		const userInputRaw = interaction.options.getString('username');
-		const userInput = userInputRaw?.toLowerCase()?.trim() ?? '';
+		const userInputRaw = interaction.options.getString('username', true);
+		const userInput = userInputRaw.toLowerCase().trim();
 
 		// Checking if the team actually exists
 		const foundUser = list.find((user) => user.github.toLowerCase() === userInput);
@@ -214,6 +212,7 @@ export class UserCommand extends Command {
 				url: `https://novu.co/contributors/${contributor.github}`,
 				iconURL: contributor.avatar_url
 			})
+			.setThumbnail(contributor.avatar_url)
 			.setDescription(contributorDescription)
 			.setFooter({
 				text: 'Novu.co',
@@ -223,6 +222,14 @@ export class UserCommand extends Command {
 			.setImage(`https://contributors.novu.co/profiles/${contributor.github}-small.jpg`)
 			.setTimestamp();
 
-		await interaction.editReply({ embeds: [teamInfoEmbed] });
+		const actionRow = new MessageActionRow();
+		actionRow.addComponents(
+			new MessageButton().setEmoji('🌐').setStyle('LINK').setURL(`https://novu.co/contributors/${contributor.github}`).setLabel('View Profile')
+		);
+
+		await interaction.editReply({
+			embeds: [teamInfoEmbed],
+			components: [actionRow]
+		});
 	}
 }
