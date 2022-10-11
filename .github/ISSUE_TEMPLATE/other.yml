@@ -21,11 +21,3 @@ body:
       description: Is there anything else I should know about this issue?
     validations:
       required: false
-  - type: markdown
-    attributes:
-      value: |
-        You can also Follow me on [GitHub](https://github.com/MrKrishnaAgarwal), and [Twitter](https://twitter.com/DMKRISHNAA)
-        Feel free to checkout my other cool [repositories](https://github.com/MrKrishnaAgarwal?tab=repositories) and [articles](https://dev.to/krishnaagarwal)
-        <br>
-        <img src= "https://octodex.github.com/images/supportcat.png" width="400">
-        
