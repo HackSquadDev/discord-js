@@ -15,15 +15,27 @@ export class UserCommand extends Command {
 
 	// slash command
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		const msg = await interaction.reply({ content: 'Ping?', fetchReply: true });
+		const msg = await interaction.deferReply({ fetchReply: true });
 		const createdTime = msg instanceof Message ? msg.createdTimestamp : Date.parse(msg.timestamp);
 
-		const content = `Pong! Bot Latency ${Math.round(this.container.client.ws.ping)}ms. API Latency ${
-			createdTime - interaction.createdTimestamp
-		}ms.`;
-
-		return await interaction.editReply({
-			content: content
+		return await interaction.followUp({
+			embeds: [
+				{
+					title: 'Pong!',
+					color: 'BLURPLE',
+					fields: [
+						{
+							name: 'Gateway Latency',
+							value: `${Math.round(this.container.client.ws.ping)}ms`
+						},
+						{
+							name: 'API Latency',
+							value: `${Date.now() - createdTime}ms`
+						}
+					],
+					timestamp: Date.now()
+				}
+			]
 		});
 	}
 }

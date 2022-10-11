@@ -1,6 +1,6 @@
 import { Command } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Formatters, MessageEmbed } from 'discord.js';
+import { Formatters, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
 //
@@ -39,8 +39,8 @@ export class UserCommand extends Command {
 		// Fetching all the teams
 		const teams = await getTeamList();
 
-		const teamInputRaw = interaction.options.getString('name');
-		const teamInput = teamInputRaw?.toLowerCase()?.trim() ?? '';
+		const teamInputRaw = interaction.options.getString('name', true);
+		const teamInput = teamInputRaw.toLowerCase().trim();
 
 		// Checking if the team actually exists
 		const foundTeam = teams.find((team) => team.name.toLowerCase() === teamInput || team.slug.toLowerCase() === teamInput);
@@ -153,6 +153,11 @@ export class UserCommand extends Command {
 			.setImage('https://user-images.githubusercontent.com/17677196/190159412-34a1d863-1c2f-49bb-930c-054753137118.jpg')
 			.setTimestamp();
 
-		await interaction.editReply({ embeds: [teamInfoEmbed] });
+		const actionRow = new MessageActionRow();
+		actionRow.addComponents(
+			new MessageButton().setEmoji('🌐').setStyle('LINK').setURL(`https://hacksquad.dev/team/${team.slug}`).setLabel('View Team')
+		);
+
+		await interaction.editReply({ embeds: [teamInfoEmbed], components: [actionRow] });
 	}
 }
