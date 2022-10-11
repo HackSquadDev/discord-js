@@ -2,7 +2,7 @@ name: Contact Support
 description: Contact support and get help
 title: Contact Support
 labels: 'support'
-assignees: devarshishimpi
+assignees: MrKrishnaAgarwal
 body:
   - type: markdown
     attributes:
