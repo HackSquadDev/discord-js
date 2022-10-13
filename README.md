@@ -26,6 +26,13 @@ In order to use the bot in production mode run the following commands:
 1. `npm run build`
 2. `npm run start`
 
+#### Deploy with Docker
+
+For easier deployment, you can use our prebuilt images for docker following the steps below:
+
+1. `docker pull <insert image name>`
+1. `docker run -e DISCORD_TOKEN=xxxxxx <insert image name>`
+
 ### How to contribute
 
 1. Fork the repo
