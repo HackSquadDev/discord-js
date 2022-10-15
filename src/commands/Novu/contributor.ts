@@ -223,8 +223,10 @@ export class UserCommand extends Command {
 			.setTimestamp();
 
 		const actionRow = new MessageActionRow();
+
 		actionRow.addComponents(
-			new MessageButton().setEmoji('🌐').setStyle('LINK').setURL(`https://novu.co/contributors/${contributor.github}`).setLabel('View Profile')
+			new MessageButton().setEmoji('🌐').setStyle('LINK').setURL(`https://novu.co/contributors/${contributor.github}`).setLabel('View Profile'),
+			new MessageButton().setStyle('LINK').setURL(`https://github.com/${contributor.github}`).setLabel('View Github')
 		);
 
 		await interaction.editReply({
