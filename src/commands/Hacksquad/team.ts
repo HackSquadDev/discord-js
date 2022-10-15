@@ -41,19 +41,22 @@ export class UserCommand extends Command {
 		});
 	}
 
-	public async pullRequestsSub(team: ITeamResponse["team"], pullRequests: IPullRequestInfo[], interaction: Command.ChatInputInteraction) {
-		const prList = chunk(pullRequests
-			.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-			.map((pr, idx) => {
-				const prLink = Formatters.hyperlink(Formatters.bold(`\`#${pr.id}\``), pr.url);
-				const prEmoji = pr.status === 'DELETED' ? '`❌`' : '';
+	public async pullRequestsSub(team: ITeamResponse['team'], pullRequests: IPullRequestInfo[], interaction: Command.ChatInputInteraction) {
+		const prList = chunk(
+			pullRequests
+				.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+				.map((pr, idx) => {
+					const prLink = Formatters.hyperlink(Formatters.bold(`\`#${pr.id}\``), pr.url);
+					const prEmoji = pr.status === 'DELETED' ? '`❌`' : '';
 
-				return {
-					name: `${++idx}. ${pr.title}`,
-					value: `${prLink} ${prEmoji}\n**Created** <t:${Math.floor(new Date(pr.createdAt).getTime() / 1000)}:R>\n\u200B`
-				} as EmbedFieldData;
-			}), 10);
-		
+					return {
+						name: `${++idx}. ${pr.title}`,
+						value: `${prLink} ${prEmoji}\n**Created** <t:${Math.floor(new Date(pr.createdAt).getTime() / 1000)}:R>\n\u200B`
+					} as EmbedFieldData;
+				}),
+			10
+		);
+
 		const buttons = createPaginationButtons();
 
 		const msg = (await interaction.followUp({
@@ -78,15 +81,15 @@ export class UserCommand extends Command {
 		);
 	}
 
-	public createPRSEmbed(pages: EmbedFieldData[][], team: ITeamResponse["team"], page: number) {
+	public createPRSEmbed(pages: EmbedFieldData[][], team: ITeamResponse['team'], page: number) {
 		const currentPage = pages[page] || pages[0];
 
 		const embed = new MessageEmbed()
 			.setTitle(`Pull Requests by ${team.name}`)
-			.setDescription("\u200B")
+			.setDescription('\u200B')
 			.setURL(`https://hacksquad.dev/team/${team.slug}`)
 			.addFields(currentPage)
-			.setColor("BLURPLE")
+			.setColor('BLURPLE')
 			.setFooter({
 				text: `Page ${page + 1} of ${pages.length}`
 			})
@@ -99,10 +102,10 @@ export class UserCommand extends Command {
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
 		// Fetching all the teams
 		const teams = await getTeamList();
-		
+
 		const teamInputRaw = interaction.options.getString('name', true);
 		const teamInput = teamInputRaw.toLowerCase().trim();
-		
+
 		// Checking if the team actually exists
 		const foundTeam = teams.find((team) => team.name.toLowerCase() === teamInput || team.slug.toLowerCase() === teamInput);
 		if (!foundTeam) {
@@ -112,7 +115,7 @@ export class UserCommand extends Command {
 			});
 			return;
 		}
-		
+
 		await interaction.deferReply();
 		// Fetching the current team details
 		const { team } = await fetch<ITeamResponse>(`${hackSquadApiUrl}/team?id=${foundTeam.slug}`, FetchResultTypes.JSON);

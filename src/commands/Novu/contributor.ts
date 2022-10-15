@@ -39,25 +39,25 @@ export class UserCommand extends Command {
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
 		// Fetching all the contributors
 		const contributors = await getContributorsList();
-		
+
 		// Filtering the contributor list
 		const list = contributors
-		// Removing bots and people with no PRs from contributor list
+			// Removing bots and people with no PRs from contributor list
 			.filter((contributor) => !contributor.github.includes('bot') && contributor.totalPulls > 0);
 
-			const userInputRaw = interaction.options.getString('username', true);
-			const userInput = userInputRaw.toLowerCase().trim();
-			
-			// Checking if the team actually exists
-			const foundUser = list.find((user) => user.github.toLowerCase() === userInput);
-			if (!foundUser) {
-				await interaction.reply({
-					content: `No contributor found with github ID **${userInputRaw}**! Please double check your input. 🙏`,
-					ephemeral: true
-				});
-				return;
-			}
-			
+		const userInputRaw = interaction.options.getString('username', true);
+		const userInput = userInputRaw.toLowerCase().trim();
+
+		// Checking if the team actually exists
+		const foundUser = list.find((user) => user.github.toLowerCase() === userInput);
+		if (!foundUser) {
+			await interaction.reply({
+				content: `No contributor found with github ID **${userInputRaw}**! Please double check your input. 🙏`,
+				ephemeral: true
+			});
+			return;
+		}
+
 		await interaction.deferReply();
 
 		// Fetching the current team details
