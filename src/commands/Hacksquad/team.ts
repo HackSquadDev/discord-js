@@ -148,10 +148,13 @@ export class UserCommand extends Command {
 		const invalidPREmoji =
 			pullRequests.length === 0 ? '' : invalidPRCount === 0 ? '`👌`' : invalidPRCount < 5 ? '`🙂`' : invalidPRCount < 15 ? '`😓`' : '`😔`';
 
+		const teamBonus = team.score - (pullRequests.length - invalidPRCount);
+		const teamBonusText = teamBonus > 0 ? `(${Formatters.italic(teamBonus.toString())} bonus points)` : '';
+
 		//
 		const teamDescriptionArray = [
 			'\u200B',
-			`• \`🔢 Points:\` ${teamScoreText}`,
+			`• \`🔢 Points:\` ${teamScoreText} ${teamBonusText}`,
 			`• \`🏅 Position:\` ${teamPositionText} (out of ${teams.length}) ${teamPositionEmoji}`,
 			`• \`👥 Members Count:\` ${teamSizeText} (${teamSizeInfo})`,
 			'',

@@ -109,7 +109,7 @@ export class UserCommand extends Command {
 			const squadPoints = Formatters.bold(team.score.toString());
 
 			const squadLink = Formatters.hyperlink(squadName, `https://hacksquad.dev/team/${team.slug}`);
-			const squadEmoji = squadPos <= winningTeamsCount ? '`🏆`' : '';
+			const squadEmoji = squadPos + 1 <= winningTeamsCount ? '`🏆`' : '';
 
 			return {
 				name: `${squadPosText} ${squadName} ${squadEmoji}`,
