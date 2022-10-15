@@ -1,14 +1,16 @@
+import { chunk } from '@sapphire/utilities';
 import { Command } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Formatters, MessageEmbed, MessageActionRow, MessageButton, Message, EmbedFieldData } from 'discord.js';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
+import { Formatters, MessageEmbed, MessageActionRow, MessageButton, Message, EmbedFieldData } from 'discord.js';
 
 //
 import { getTeamList } from '../../lib/cachedFetch';
 import { hackSquadApiUrl } from '../../lib/constants';
-import type { IPullRequestInfo, ITeamResponse } from '../../lib/types';
 import { createPaginationButtons, paginate } from '../../lib/pagination';
-import { chunk } from '@sapphire/utilities';
+
+//
+import type { IPullRequestInfo, ITeamResponse } from '../../lib/types';
 
 //
 const squadSizeMax = 5;
@@ -42,23 +44,35 @@ export class UserCommand extends Command {
 	}
 
 	public async pullRequestsSub(team: ITeamResponse['team'], pullRequests: IPullRequestInfo[], interaction: Command.ChatInputInteraction) {
-		const prList = chunk(
-			pullRequests
-				.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-				.map((pr, idx) => {
-					const prLink = Formatters.hyperlink(Formatters.bold(`\`#${pr.id}\``), pr.url);
-					const prEmoji = pr.status === 'DELETED' ? '`❌`' : '';
+		const prItems = pullRequests
+			.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+			.map((pr, idx) => {
+				const [repo, prId] = pr.url.split('github.com/')[1]?.split('/pull/');
 
-					return {
-						name: `${++idx}. ${pr.title}`,
-						value: `${prLink} ${prEmoji}\n**Created** <t:${Math.floor(new Date(pr.createdAt).getTime() / 1000)}:R>\n\u200B`
-					} as EmbedFieldData;
-				}),
-			10
-		);
+				const prLink = Formatters.hyperlink(repo, pr.url);
+				const prEmoji = pr.status === 'DELETED' ? '(`❌`)' : '';
+				const prTime = Math.floor(new Date(pr.createdAt).getTime() / 1000);
 
+				const description = [
+					//
+					`• ${prLink} #${prId} ${prEmoji}`,
+					`• Created: <t:${prTime}:R>`,
+					'\u200B'
+				].join('\n');
+
+				return {
+					name: `${++idx}. ${pr.title}`,
+					value: description
+				} as EmbedFieldData;
+			});
+
+		//
+		const prList = chunk(prItems, 5);
+
+		//
 		const buttons = createPaginationButtons();
 
+		//
 		const msg = (await interaction.followUp({
 			embeds: [this.createPRSEmbed(prList, team, 0)],
 			components: [buttons],
@@ -194,7 +208,7 @@ export class UserCommand extends Command {
 			.slice(0, 5)
 			.map((pr) => {
 				const prLink = Formatters.hyperlink(Formatters.bold(pr.title), pr.url);
-				const prEmoji = pr.status === 'DELETED' ? '`❌`' : '';
+				const prEmoji = pr.status === 'DELETED' ? '(`❌`)' : '';
 
 				return `\`-\` ${prLink} ${prEmoji}`;
 			});
