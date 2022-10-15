@@ -1,6 +1,7 @@
-import { MessageActionRow, MessageButton, type Message, type InteractionReplyOptions, type ButtonInteraction } from 'discord.js';
+import { MessageActionRow, MessageButton } from 'discord.js';
+
 import type { Command } from '@sapphire/framework';
-import type { InteractionButtonOptions } from 'discord.js';
+import type { InteractionButtonOptions, Message, InteractionReplyOptions, ButtonInteraction } from 'discord.js';
 
 interface IPaginateProps {
 	msg: Message<true>;

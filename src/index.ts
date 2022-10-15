@@ -1,6 +1,9 @@
 import './lib/setup';
+
+//
 import { LogLevel, SapphireClient } from '@sapphire/framework';
 
+//
 const client = new SapphireClient({
 	defaultPrefix: '!',
 	regexPrefix: /^(hey +)?bot[,! ]/i,
@@ -9,11 +12,12 @@ const client = new SapphireClient({
 		level: LogLevel.Debug
 	},
 	shards: 'auto',
-	intents: ['GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES'],
+	intents: ['GUILDS', 'DIRECT_MESSAGES'],
 	partials: ['CHANNEL'],
 	loadMessageCommandListeners: true
 });
 
+//
 const main = async () => {
 	try {
 		client.logger.info('Logging in');
