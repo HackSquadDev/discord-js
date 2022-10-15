@@ -89,7 +89,7 @@ const faqList: IFaqData[] = [
 		answer: `You can check the logs ${Formatters.hyperlink(
 			'here',
 			'https://flask-production-924c.up.railway.app/'
-		)} and ask the moderator about the reason 🙏`
+		)} and ask the respective moderator about the reason 🙏`
 	}
 ];
 
