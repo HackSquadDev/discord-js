@@ -66,8 +66,11 @@ export function paginate({ msg, buttons, interaction, pages, currentPage }: IPag
 				],
 				ephemeral: true
 			} as InteractionReplyOptions;
-			if (interaction.deferred) return void (await interaction.followUp(err));
-			return void (await interaction.reply(err));
+
+			if (intr.deferred) await intr.followUp(err);
+			else await intr.reply(err);
+
+			return;
 		}
 
 		switch (intr.customId) {
