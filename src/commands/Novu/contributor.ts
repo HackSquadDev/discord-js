@@ -37,8 +37,6 @@ export class UserCommand extends Command {
 	}
 
 	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		await interaction.deferReply();
-
 		// Fetching all the contributors
 		const contributors = await getContributorsList();
 
@@ -53,9 +51,14 @@ export class UserCommand extends Command {
 		// Checking if the team actually exists
 		const foundUser = list.find((user) => user.github.toLowerCase() === userInput);
 		if (!foundUser) {
-			await interaction.editReply(`No contributor found with github ID **${userInputRaw}**! Please double check your input. 🙏`);
+			await interaction.reply({
+				content: `No contributor found with github ID **${userInputRaw}**! Please double check your input. 🙏`,
+				ephemeral: true
+			});
 			return;
 		}
+
+		await interaction.deferReply();
 
 		// Fetching the current team details
 		const [contributor, badges] = await Promise.all([
@@ -229,7 +232,7 @@ export class UserCommand extends Command {
 			new MessageButton().setStyle('LINK').setURL(`https://github.com/${contributor.github}`).setLabel('View Github')
 		);
 
-		await interaction.editReply({
+		await interaction.followUp({
 			embeds: [teamInfoEmbed],
 			components: [actionRow]
 		});

@@ -1,12 +1,14 @@
 import { Command } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Formatters, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
+import { Formatters, MessageEmbed, MessageActionRow, MessageButton, Message, EmbedFieldData } from 'discord.js';
 import { fetch, FetchResultTypes } from '@sapphire/fetch';
 
 //
 import { getTeamList } from '../../lib/cachedFetch';
 import { hackSquadApiUrl } from '../../lib/constants';
 import type { IPullRequestInfo, ITeamResponse } from '../../lib/types';
+import { createPaginationButtons, paginate } from '../../lib/pagination';
+import { chunk } from '@sapphire/utilities';
 
 //
 const squadSizeMax = 5;
@@ -28,14 +30,76 @@ export class UserCommand extends Command {
 					description: 'Name or Slug of the team to lookup for',
 					required: true,
 					autocomplete: true
+				},
+				{
+					type: 'BOOLEAN',
+					name: 'prs',
+					description: 'Show pull requests made by this team',
+					required: false
 				}
 			]
 		});
 	}
 
-	public async chatInputRun(interaction: Command.ChatInputInteraction) {
-		await interaction.deferReply();
+	public async pullRequestsSub(team: ITeamResponse['team'], pullRequests: IPullRequestInfo[], interaction: Command.ChatInputInteraction) {
+		const prList = chunk(
+			pullRequests
+				.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+				.map((pr, idx) => {
+					const prLink = Formatters.hyperlink(Formatters.bold(`\`#${pr.id}\``), pr.url);
+					const prEmoji = pr.status === 'DELETED' ? '`❌`' : '';
 
+					return {
+						name: `${++idx}. ${pr.title}`,
+						value: `${prLink} ${prEmoji}\n**Created** <t:${Math.floor(new Date(pr.createdAt).getTime() / 1000)}:R>\n\u200B`
+					} as EmbedFieldData;
+				}),
+			10
+		);
+
+		const buttons = createPaginationButtons();
+
+		const msg = (await interaction.followUp({
+			embeds: [this.createPRSEmbed(prList, team, 0)],
+			components: [buttons],
+			fetchReply: true
+		})) as Message<true>;
+
+		return paginate(
+			{
+				msg,
+				buttons,
+				currentPage: 0,
+				interaction,
+				pages: prList
+			},
+			async (intr, pageNumber) => {
+				await intr.editReply({
+					embeds: [this.createPRSEmbed(prList, team, pageNumber)]
+				});
+			}
+		);
+	}
+
+	public createPRSEmbed(pages: EmbedFieldData[][], team: ITeamResponse['team'], page: number) {
+		const currentPage = pages[page] || pages[0];
+
+		const embed = new MessageEmbed()
+			.setTitle(`Pull Requests by ${team.name}`)
+			.setDescription('\u200B')
+			.setURL(`https://hacksquad.dev/team/${team.slug}`)
+			.addFields(currentPage)
+			.setColor('BLURPLE')
+			.setFooter({
+				text: `Page ${page + 1} of ${pages.length}`
+			})
+			.setImage('https://user-images.githubusercontent.com/17677196/190159412-34a1d863-1c2f-49bb-930c-054753137118.jpg')
+			.setTimestamp();
+
+		return embed;
+	}
+
+	public async chatInputRun(interaction: Command.ChatInputInteraction) {
 		// Fetching all the teams
 		const teams = await getTeamList();
 
@@ -45,14 +109,22 @@ export class UserCommand extends Command {
 		// Checking if the team actually exists
 		const foundTeam = teams.find((team) => team.name.toLowerCase() === teamInput || team.slug.toLowerCase() === teamInput);
 		if (!foundTeam) {
-			await interaction.editReply(`No team named **${teamInputRaw}** was found! Please double check your input. 🙏`);
+			await interaction.reply({
+				content: `No team named **${teamInputRaw}** was found! Please double check your input. 🙏`,
+				ephemeral: true
+			});
 			return;
 		}
 
+		await interaction.deferReply();
 		// Fetching the current team details
 		const { team } = await fetch<ITeamResponse>(`${hackSquadApiUrl}/team?id=${foundTeam.slug}`, FetchResultTypes.JSON);
 
 		const pullRequests: IPullRequestInfo[] = JSON.parse(team.prs);
+
+		if (interaction.options.getBoolean('prs')) {
+			return this.pullRequestsSub(team, pullRequests, interaction);
+		}
 
 		//
 		const teamScoreText = Formatters.bold(team.score.toString());
@@ -122,7 +194,7 @@ export class UserCommand extends Command {
 			.slice(0, 5)
 			.map((pr) => {
 				const prLink = Formatters.hyperlink(Formatters.bold(pr.title), pr.url);
-				const prEmoji = pr.status === 'DELETED' ? '(`🗑`)' : '';
+				const prEmoji = pr.status === 'DELETED' ? '`❌`' : '';
 
 				return `\`-\` ${prLink} ${prEmoji}`;
 			});
@@ -161,6 +233,6 @@ export class UserCommand extends Command {
 			new MessageButton().setEmoji('🌐').setStyle('LINK').setURL(`https://hacksquad.dev/team/${team.slug}`).setLabel('View Team')
 		);
 
-		await interaction.editReply({ embeds: [teamInfoEmbed], components: [actionRow] });
+		await interaction.followUp({ embeds: [teamInfoEmbed], components: [actionRow] });
 	}
 }
