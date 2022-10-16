@@ -48,7 +48,7 @@ export class FaqCommand extends Command {
 			.setColor('YELLOW')
 			.setDescription([questionStr, '', answerStr].join('\n'))
 			.setFooter({
-				text: 'HackSuqad',
+				text: 'HackSquad',
 				iconURL: 'https://www.hacksquad.dev/favicon.png'
 			})
 			.setImage('https://user-images.githubusercontent.com/17677196/190159412-34a1d863-1c2f-49bb-930c-054753137118.jpg')
