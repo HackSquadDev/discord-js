@@ -235,7 +235,7 @@ export class UserCommand extends Command {
 			})
 			.setDescription(teamDescription)
 			.setFooter({
-				text: 'HackSuqad',
+				text: 'HackSquad',
 				iconURL: 'https://www.hacksquad.dev/favicon.png'
 			})
 			.addFields(teamFields)
