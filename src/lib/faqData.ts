@@ -1,5 +1,5 @@
-import { Formatters } from 'discord.js';
 import Fuse from 'fuse.js';
+import { Formatters } from 'discord.js';
 
 const faqList: IFaqData[] = [
 	// FAQs from the website
@@ -77,7 +77,8 @@ const faqList: IFaqData[] = [
 			'',
 			'`-` The PR is made on a DSA repository',
 			'`-` The PR is made just to +1 your PR count during the event',
-			'`-` The PR is on your own repo (We know valuable contributions can be done to your own repo, but in order to do this you need strong reasons)'
+			'`-` The PR is on your own repo (We know valuable contributions can be done to your own repo, but in order to do this you need strong reasons)',
+			'`-` The PR is on a repo which simply asks you to list our XYZ project (e.g. script, web app list, python collection etc. etc.)'
 		].join('\n')
 	},
 	{
@@ -88,8 +89,21 @@ const faqList: IFaqData[] = [
 		question: 'Can I know who deleted my PR, disqualified me/my team and why?',
 		answer: `You can check the logs ${Formatters.hyperlink(
 			'here',
-			'https://flask-production-924c.up.railway.app/'
-		)} and ask the respective moderator about the reason 🙏`
+			'https://www.hacksquad.dev/logs'
+		)} and ask the respective moderator about the reason if you are not satisfied with the decision 🙏`
+	},
+	{
+		question: 'All the PRs of my team have dissapeared, can anyone help me?',
+		answer: 'We are sorry for your inconvenience. This however is a known bug and it seems to be fixed within an hour or two by itself. please have some patience 🙏'
+	},
+	{
+		question: "I didn't know DSA repositories was not allowed, can you remove the disqualfication from my account?",
+		answer: [
+			'We definitely want everyone to have a fair chance and appreciate you willing to change after you got to know.',
+			'',
+			'What you can do is start making good contributions and get back to us in a week or by the end of the event, whichever is earlier.',
+			'If we see that you did good afterwards the conversation we can definitely bring you back to the game, and then you will even have the points you made for the valid pull requests.'
+		].join('\n')
 	}
 ];
 
