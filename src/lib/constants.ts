@@ -7,6 +7,3 @@ export const RandomLoadingMessage = ['Computing...', 'Thinking...', 'Cooking som
 
 export const hackSquadApiUrl = 'https://www.hacksquad.dev/api';
 export const novuApiUrl = 'https://contributors.novu.co';
-
-export const pistonRuntimesUrl = 'https://emkc.org/api/v2/piston/runtimes';
-export const pistonExecuteUrl = 'https://emkc.org/api/v2/piston/execute';

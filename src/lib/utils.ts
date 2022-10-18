@@ -72,15 +72,3 @@ export function createChunk<T>(arr: T[], len: number): T[][] {
 
 	return chunks;
 }
-
-export function paren<T extends string>(str: T): `(${T})` {
-	return `(${str})`;
-}
-
-export function parseJSON<T = unknown>(src: string): T | null {
-	try {
-		return JSON.parse(src);
-	} catch {
-		return null;
-	}
-}
