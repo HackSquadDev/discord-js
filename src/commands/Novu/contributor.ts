@@ -222,7 +222,7 @@ export class UserCommand extends Command {
 				iconURL: 'https://novu.co/favicon-32x32.png'
 			})
 			.addFields(contributorFields)
-			.setImage(`https://contributors.novu.co/profiles/${contributor.github}-small.jpg`)
+			.setImage(`https://contributors.novu.co/profiles/${contributor.github}-small.jpg?t=${Date.now()}`)
 			.setTimestamp();
 
 		const actionRow = new MessageActionRow();
