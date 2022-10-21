@@ -1,7 +1,7 @@
 name: Contact Support
 description: Contact support and get help
 title: Contact Support
-labels: 'support'
+labels: [support]
 assignees: MrKrishnaAgarwal
 body:
   - type: markdown
